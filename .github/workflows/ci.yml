@@ -1,0 +1,27 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt httpx
+      - name: Compile check
+        run: python -m compileall -q autoforge tests
+      - name: Tests (deterministic mock provider; no paid APIs, no secrets)
+        run: python -W ignore -m unittest discover -s tests -t . -v
+      - name: Secret scan (basic)
+        run: "! grep -RInE '(sk-ant-|AKIA[0-9A-Z]{16}|BEGIN [A-Z ]*PRIVATE KEY)' --include='*' --exclude-dir=.git --exclude-dir=tests ."
+      - name: Image build
+        run: docker build -t autoforge:ci .
+  e2e:
+    runs-on: ubuntu-24.04
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt httpx playwright && python -m playwright install --with-deps chromium
+      - run: python tests/e2e_browser.py

@@ -1,0 +1,10 @@
+# Optional: try real namespace isolation inside Docker (NOT tested by the author - no Docker daemon was available).
+#   docker compose -f compose.yaml -f compose.strong.yaml up --build -d
+# This lets the container create user namespaces, which weakens the container itself (seccomp off, SYS_ADMIN).
+# Check the amber/green "Sandbox" chip in the top bar: green means the strong sandbox works.
+services:
+  nextbuild:
+    environment:
+      ALLOW_WEAK_SANDBOX: "0"
+    security_opt: ["no-new-privileges:true", "seccomp=unconfined"]
+    cap_add: [SYS_ADMIN]

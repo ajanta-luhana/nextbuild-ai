@@ -1,0 +1,26 @@
+# NextBuild AI, local Docker deployment. Reachable only from this computer (published on 127.0.0.1).
+# NOTE: this file was written but NOT executed in the authoring environment (no Docker daemon available).
+name: nextbuild-ai
+services:
+  nextbuild:
+    build: .
+    container_name: nextbuild-ai
+    restart: unless-stopped
+    ports: ["127.0.0.1:${HOST_PORT:-9100}:8000"]
+    environment:
+      APP_ENV: development
+      AUTH_MODE: password
+      MODEL_PROVIDER: mock
+      # The app listens on all interfaces *inside* the container; the published port above is bound to 127.0.0.1 only.
+      ALLOW_REMOTE_BIND: "1"
+      ALLOWED_HOSTS: "localhost,127.0.0.1,[::1]"
+      # Docker Desktop blocks the user namespaces the strong sandbox needs, so by default generated code runs inside this
+      # container without namespace isolation (command allowlist, scrubbed environment, time/memory limits still apply).
+      # The container itself is the boundary: it is non-root, has no extra capabilities and only your own machine can reach it.
+      # Put ALLOW_WEAK_SANDBOX=0 in a .env file next to this one to refuse running generated code instead, or use compose.strong.yaml.
+      ALLOW_WEAK_SANDBOX: "${ALLOW_WEAK_SANDBOX:-1}"
+    volumes: [nextbuild-data:/var/lib/autoforge]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+volumes:
+  nextbuild-data:

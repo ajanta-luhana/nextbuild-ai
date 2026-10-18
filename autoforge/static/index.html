@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>NextBuild AI</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="guest">
+  <a class="skip" href="#main">Skip to content</a>
+  <header id="top" hidden>
+    <a class="brand" href="#/"><span class="mark" aria-hidden="true"><i></i><i></i><i></i></span><span>NextBuild AI<small>Verified software delivery</small></span></a>
+    <nav aria-label="Main">
+      <a href="#/" data-nav="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Dashboard</a>
+      <a href="#/new" data-nav="new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>New project</a>
+      <a href="#/settings" data-nav="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>Settings</a>
+      <a href="#/audit" data-nav="audit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>Security &amp; audit</a>
+    </nav>
+    <div class="who">
+      <div class="row"><span><span id="whoami"></span> <span id="role" class="rolechip"></span></span>
+        <button id="bell" class="ghost" aria-label="Notifications" type="button">Alerts <span id="bell-count" class="pill" hidden>0</span></button></div>
+      <div class="row"><button id="view3d" type="button" aria-pressed="true">3D view: on</button></div>
+      <div class="row"><button id="chpw" type="button">Security</button><button id="logout" type="button">Sign out</button></div>
+    </div>
+  </header>
+  <div class="topbar" id="topbar" hidden>
+    <div class="crumbs"><span class="muted">Workspace</span><span class="sep">/</span><strong id="crumb">Dashboard</strong></div>
+    <div class="row">
+      <span class="chip" id="chip-sbx"><i class="dot"></i><span>Checking sandbox…</span></span>
+      <span class="chip" id="chip-ai">AI provider</span>
+      <span class="avatar" id="avatar" aria-hidden="true">?</span>
+    </div>
+  </div>
+  <main id="main" tabindex="-1"></main>
+  <div id="toasts" role="status" aria-live="polite"></div>
+  <dialog id="dlg"></dialog>
+  <script src="/model3d.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
