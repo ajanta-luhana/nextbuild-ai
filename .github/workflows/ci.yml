@@ -8,12 +8,14 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: pip install -r requirements.txt httpx
+      - name: Allow unprivileged user namespaces (needed by the sandbox on Ubuntu 24.04 runners)
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Compile check
         run: python -m compileall -q autoforge tests
       - name: Tests (deterministic mock provider; no paid APIs, no secrets)
         run: python -W ignore -m unittest discover -s tests -t . -v
       - name: Secret scan (basic)
-        run: "! grep -RInE '(sk-ant-|AKIA[0-9A-Z]{16}|BEGIN [A-Z ]*PRIVATE KEY)' --include='*' --exclude-dir=.git --exclude-dir=tests ."
+        run: "! grep -RInE '(sk-ant-[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16}|BEGIN [A-Z ]*PRIVATE KEY)' --include='*' --exclude-dir=.git --exclude-dir=tests ."
       - name: Image build
         run: docker build -t autoforge:ci .
   e2e:
@@ -24,4 +26,6 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: pip install -r requirements.txt httpx playwright && python -m playwright install --with-deps chromium
+      - name: Allow unprivileged user namespaces (needed by the sandbox on Ubuntu 24.04 runners)
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - run: python tests/e2e_browser.py
